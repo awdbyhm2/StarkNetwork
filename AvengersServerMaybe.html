@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avengers</title>
+    <style>
+        body {
+            background-color: #111111;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        #chatbox {
+            border: 1px solid #444;
+            border-radius: 5px;
+            padding: 10px;
+            height: 300px;
+            overflow-y: scroll;
+            background-color: #222;
+        }
+        .user-message, .bot-response {
+            margin: 10px 0;
+            padding: 8px;
+            border-radius: 4px;
+        }
+        .user-message {
+            background-color: #444;
+            text-align: right;
+        }
+        .bot-response {
+            background-color: #333;
+            text-align: left;
+        }
+        #input-area {
+            margin-top: 20px;
+        }
+        #user-input {
+            width: 80%;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #444;
+            background-color: #222;
+            color: #fff;
+        }
+        #send-btn, #animation-btn {
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            color: #fff;
+            cursor: pointer;
+        }
+        #send-btn {
+            background-color: #f00;
+            color: rgb(5, 5, 120)
+        }
+        #send-btn:hover {
+            background-color: #c00;
+        }
+        #animation-btn {
+            background-color: rgb(5, 5, 120);
+            color: red;
+            margin-left: 10px;
+        }
+        #animation-btn:hover {
+            background-color: rgb(134, 183, 218);
+        }
+        .file-load {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+        }
+        .scary-animation img {
+            width: 150px;
+            animation: shake 0.5s infinite alternate;
+        }
+        @keyframes shake {
+            0% { transform: translate(0); }
+            100% { transform: translate(-5px, 5px); }
+        }
+    </style>
+</head>
+<body>
+
+<h1>Avengers System</h1>
+<div id="chatbox"></div>
+<div id="input-area">
+    <input type="text" id="user-input" placeholder="Avengers System is still in progress" />
+    <button id="send-btn">Enter</button>
+    <button id="animation-btn">Load Files</button>
+</div>
+
+<script>
+    const keywordResponses = {
+        "ironman123": "Your files are not all on this server, the ones that you can access are as follows: Mark I, Mark V, and JARVIS 0.1",
+        "jarvis": "ACCESS DENIED, higher authorization neccesary.",
+        "mark i": "ACCESS DENIED, higher authorization neccesary.",
+        "mark v": "ACCESS DENIED, higher authorization neccesary.",
+        "edith": "E.D.I.T.H. glasses coordinates = 'UNKNOWN'",
+        "track": "E.D.I.T.H. glasses coordinates = 'UNKNOWN'        Fabricator coordinates = 'UNKNOWN'        JARVIS mainframe coordinates = 'UNCERTAIN/NEAR'",
+        "thanos": "SYSTEM ERROR NULL THANOS REQUEST DENIED&RQSRLFOLWJHEDBUKLEJHDGBFU@#(*UEH*IO@#$I&YUEWHRN*FIUY@$KEW)",
+        "friends": "I prefer the company of the silent.",
+        "movie": "The last one that made you scream.",
+        "dark": "I thrive in darkness... it feeds me.",
+        "fun": "I like to watch you when you're alone.",
+        "love": "Love is a trap... like a spider’s web.",
+        "secret": "I know your secrets... and they haunt you.",
+        "night": "Wherever the shadows lead me.",
+        "ghosts": "They believe in you... and they watch.",
+        "book": "The one that made you hide under the covers.",
+        "song": "The one that makes your heart race.",
+        "death": "You awaken in the dark... where I dwell.",
+        "wish": "To never be alone again.",
+        "devour": "You will vanish into my maw, never to see the light of day again.",
+        "die": "I can make it happen, just say the word, or don't, I'll do it either way......",
+        "afraid": "Only the light... it can reveal too much.",
+        "body": "I would find you and never let go.",
+        "poolrooms": "The poolrooms are a labyrinth of endless hallways, dimly lit and echoing with whispers of lost souls.",
+        "creatures": "Yes, beings that feast on despair, lurking just out of sight, waiting for the unwary.",
+        "layout": "It's a maze of hallways, rooms with flickering lights, and doors that lead to nowhere.",
+        "escape": "Many have tried, but the more you wander, the more lost you become.",
+        "trust": "Trust no one; the shadows can be deceiving, and they know your deepest fears.",
+        "safety": "Safety is an illusion; once you step inside, you may never want to leave.",
+        "run": "You can try, but it won't achieve anything, actually, please do try, I've been in need of some playful food...",
+    };
+
+    const chatbox = document.getElementById('chatbox');
+    const userInput = document.getElementById('user-input');
+    const sendBtn = document.getElementById('send-btn');
+    const animationBtn = document.getElementById('animation-btn');
+    const load = document.getElementById('file-load');
+
+    sendBtn.addEventListener('click', () => {
+        const message = userInput.value.toLowerCase();
+        if (message.trim()) {
+            addMessage(message, 'user');
+            userInput.value = '';
+            setTimeout(() => {
+                addMessage(getHorrorResponse(message), 'bot');
+            }, 500);
+        }
+    });
+
+    animationBtn.addEventListener('click', () => {
+        showScaryAnimation();
+    });
+
+    userInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            sendBtn.click();
+        }
+    });
+
+    function addMessage(message, sender) {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = sender === 'user' ? 'user-message' : 'bot-response';
+        messageDiv.textContent = message;
+        chatbox.appendChild(messageDiv);
+        chatbox.scrollTop = chatbox.scrollHeight; // Auto-scroll to bottom
+    }
+
+    function getHorrorResponse(message) {
+        for (const keyword in keywordResponses) {
+            if (message.includes(keyword)) {
+                return keywordResponses[keyword];
+            }
+        }
+        return "Unable to connect to Stark network, please try again later.";
+    }
+
+    function loadFile() {
+        text: "Unable to connect to Stark network, please try again later.";
+        load.style.display = 'flex';
+        setTimeout(() => {
+            load.style.display = 'none';
+        }, 3000); // Show for 3 seconds
+    }
+</script>
+
+</body>
+</html>

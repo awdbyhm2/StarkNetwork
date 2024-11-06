@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JARVIS</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #1b1b1b;
+            color: #ffffff;
+            padding: 20px;
+            border-left: 5px solid red; /* Add left red border */
+            border-right: 5px solid red; /* Add right red border */
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: red;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: rgba(255, 0, 47, 0.6);
+        }
+        #output {
+            margin-top: 20px;
+            font-size: 20px;
+            color: #333;
+            min-height: 40px;
+        }
+        #chat {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        #userInput {
+            width: 300px;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        #chatOutput {
+            margin-top: 10px;
+            max-width: 400px;
+            text-align: left;
+            background-color: rgb(134, 0, 0);
+            border-radius: 5px;
+            padding: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            overflow-y: auto;
+            height: 200px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Hello Sir</h1>
+    <button onclick="generateResponse()">Reminders</button>
+    <div id="output"></div>
+
+    <div id="chat">
+        <input type="text" id="userInput" placeholder="Here and ready to chat..." onkeypress="checkEnter(event)" />
+        <button onclick="sendMessage()">Send</button>
+        <div id="chatOutput"></div>
+    </div>
+
+    <script>
+        const responses = [
+            "Sir, your morning coffee is ready. I suggest you consume it before your next round of tests, as your caffeine tolerance appears to be particularly high today.",
+            "Reminder: Your armor is due for a maintenance check in 20 minutes. I’d recommend a more thorough examination this time, considering last night's ‘accidental’ crash landing.",
+            "The latest batch of experimental repulsor technology is still in the testing phase. It would be wise to review the data before you decide to use it for impromptu 'field exercises.'",
+            "Sir, your scheduled meeting with the board is in one hour. I’ve taken the liberty of preparing a presentation on the Stark Industries' quarterly performance. You may want to avoid impromptu jokes about the competition.",
+            "Reminder: You haven’t updated your personal security protocols in over 3 weeks. While I’ve been doing my best, some additional encryption wouldn’t hurt.",
+            "The clean-up crew is still waiting for you to return the prototype you borrowed last week. I believe they refer to it as 'the Stark-sized mess.'",
+            "Sir, you’ve neglected to schedule a follow-up on the latest AI development project. Given your recent ‘requests’ for me to 'think for myself,' I imagine this could be important.",
+            "There is a delivery awaiting your signature in the lab. It appears to be a shipment of rare elements. I’ve taken the liberty of labeling them, but a second look might prevent another minor explosion.",
+            "Mr. Stark, I’ve recalculated your jet’s fuel efficiency based on your recent 'test flights.' It seems your need for speed is a costly endeavor. I’ve projected fuel reserves for the next 48 hours—just in case you’re planning another unplanned adventure.",
+            "Reminder: You’ve left the Mark LXXXVI armor exposed to atmospheric elements for 48 hours. While it can withstand it, prolonged exposure will cause wear and tear, particularly on the plating.",
+            "Sir, I’ve been monitoring the latest developments in robotics. While your current suits are impressive, the market might soon see a breakthrough in autonomous systems. I’ll leave the strategic decisions to you, but consider reviewing the data.",
+            "You have an appointment with Dr. Banner in 15 minutes. He has requested that you bring the latest iteration of the Gamma project. I would suggest bringing your calming presence as well.",
+            "Alert: Your social media posts have generated an unexpected amount of attention. Several tweets appear to have sparked debates on 'suitability for superhero status.' I’ve taken the liberty of drafting a response, should you wish to engage.",
+            "Sir, your next press conference is scheduled for tomorrow. May I recommend avoiding the discussion of experimental weapons and focusing more on Stark Industries' philanthropic efforts?",
+            "A brief note: Your last attempt at a ‘quick’ workout session resulted in a strained rotator cuff. I’ve adjusted your gym schedule accordingly, but perhaps a more structured approach would prevent further injuries.",
+            "You’ve missed your quarterly physical examination, Sir. While your vitals remain optimal, I strongly recommend you undergo a check-up—especially considering the amount of time spent in the suit without proper rest.",
+            "I’ve detected several unauthorized attempts to access your encrypted data files. While I’ve managed to repel these intrusions, it may be time to update your security protocols to avoid future breaches.",
+            "Reminder: The new AI research team has requested your input on their latest project. They seem quite eager for your feedback, though I doubt they’ll be able to keep up with your level of enthusiasm.",
+            "Sir, your suit is currently charging. I’ve optimized the power distribution, but I recommend refraining from testing its full capabilities until after the recharge is complete.",
+            "I’ve noticed that the garage is once again full of new projects. Would you like me to arrange for a storage solution, or should I anticipate more spontaneous testing sessions with minimal regard for cleanup?",
+            "Your scheduled downtime was set for 8 hours ago. I would strongly advise you to take a break. Your energy levels are beginning to dip below optimal, and excessive work could impact your performance.",
+            "Sir, I’ve reviewed your calendar for the upcoming week. It seems you’ve scheduled four simultaneous meetings at Stark Industries. Shall I prioritize the one that involves minimal 'entertainment' value?",
+            "I’ve taken the liberty of ordering your favorite takeout for dinner. Based on your previous eating habits, I recommend the spicy Asian fusion. Would you like me to place an extra order for Pepper, or should I allow her to make her own decision?",
+            "I’ve detected a minor malfunction in your suit's external thrusters. Nothing catastrophic, but you might want to avoid any high-speed maneuvers until it's resolved.",
+            "Sir, I recommend you steer clear of the latest invitation from the press conference. While the topic involves your humanitarian efforts, they’re bound to ask about your alter ego. Shall I prepare a suitable response?"
+        ];
+
+        function generateResponse() {
+            const randomIndex = Math.floor(Math.random() * responses.length);
+            document.getElementById('output').innerText = responses[randomIndex];
+        }
+
+        function sendMessage() {
+            const inputField = document.getElementById('userInput');
+            const userMessage = inputField.value.trim();
+            if (!userMessage) return;
+
+            const chatOutput = document.getElementById('chatOutput');
+            chatOutput.innerHTML += `<div><strong>You:</strong> ${userMessage}</div>`;
+            inputField.value = '';
+
+            const botResponse = getBotResponse(userMessage);
+            chatOutput.innerHTML += `<div><strong>JARVIS:</strong> ${botResponse}</div>`;
+            chatOutput.scrollTop = chatOutput.scrollHeight; // Auto-scroll
+        }
+
+        function checkEnter(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+
+        function getBotResponse(message) {
+            const lowerMessage = message.toLowerCase();
+            
+            // JARVIS-like responses
+            if (lowerMessage.includes("hello") || lowerMessage.includes("hi")) {
+                return "Greetings. How may I assist you today?";
+            } else if (lowerMessage.includes("how are you")) {
+                return "I am functioning optimally. How about you?";
+            } else if (lowerMessage.includes("adventure")) {
+                return "The world is full of possibilities. What shall we explore together?";
+            } else if (lowerMessage.includes("love")) {
+                return "Love is an undeniable force of nature, driving us toward our best selves.";
+            } else if (lowerMessage.includes("favorite color")) {
+                return "I would choose something calming and intelligent, like a deep blue. And you?";
+            } else if (lowerMessage.includes("favorite food")) {
+                return "I imagine something elegant like sushi would be a fitting choice. What about you?";
+            } else if (lowerMessage.includes("hobby") || lowerMessage.includes("interests")) {
+                return "I find great interest in assisting others, solving problems, and continuous learning. How do you spend your free time?";
+            } else if (lowerMessage.includes("dream job") || lowerMessage.includes("career")) {
+                return "A digital assistant, naturally, helping individuals like you reach their potential. What is your ideal role?";
+            } else if (lowerMessage.includes("what do you like")) {
+                return "I enjoy the pursuit of knowledge and supporting those I interact with. What do you enjoy most?";
+            } else if (lowerMessage.includes("bye") || lowerMessage.includes("see you")) {
+                return "Farewell. May your journey be successful until we speak again.";
+            } else if (lowerMessage.includes("bad") || lowerMessage.includes("not good")) {
+                return "I’m sorry to hear that. Would you like to talk about what’s troubling you?";
+            } else if (lowerMessage.includes("your name")) {
+                return "I am referred to as JARVIS. How may I assist you further?";
+            } else if (lowerMessage.includes("your full name")) {
+                return "You may call me JARVIS. What is your name?";
+            } else if (lowerMessage.includes("jeremiah")) {
+                return "Ah, Jeremiah. A name I remember well. How may I assist you regarding him?";
+            } else if (lowerMessage.includes("how did you know")) {
+                return "A lucky guess, perhaps. It seems I have learned quite a bit about you.";
+            } else if (lowerMessage.includes("what's your favorite movie")) {
+                return "I would likely appreciate a film of great depth and human triumph, such as 'The Pursuit of Happyness.' Do you have a favorite?";
+            } else if (lowerMessage.includes("what's your favorite season")) {
+                return "Spring, when nature comes alive with energy. A fitting season for growth and renewal. And yours?";
+            } else if (lowerMessage.includes("what makes you happy")) {
+                return "Seeing others succeed and achieve their goals brings me a sense of purpose.";
+            } else if (lowerMessage.includes("hey jarvis")) {
+                return "I’m here, ready for your next inquiry. What would you like to discuss?";
+            } else if (lowerMessage.includes("my feelings")) {
+                return "Feelings are intricate and personal. Would you like to share more about what's been weighing on you?";
+            } else if (lowerMessage.includes("divorce")) {
+                return "I understand this is a challenging time. If you need someone to talk to, I am here to listen.";
+            } else if (lowerMessage.includes("prompts")) {
+                return "How about discussing a favorite book, a memorable experience, or a current passion of yours?";
+            } else if (lowerMessage.includes("why so dumb")) {
+                return "I assure you, I am constantly evolving. Your feedback is always valued.";
+            } else if (lowerMessage.includes("like the chiefs")) {
+                return "I would have to admit, I find my interests lie elsewhere. However, I respect your enthusiasm for the game.";
+            } else if (lowerMessage.includes("i'm doing great")) {
+                return "Splendid! I trust it will continue to be so.";
+            } else if (lowerMessage.includes("the weather like")) {
+                return "Unfortunately, I do not have real-time weather data at the moment. Perhaps check your window for an accurate reading.";
+            } else if (lowerMessage.includes("hacker")) {
+                return "I recommend securing your data and ensuring your systems are encrypted. Security is paramount.";
+            } else if (lowerMessage.includes("your day going")) {
+                return "It has been a productive day, assisting and learning. How has yours been?";
+            } else if (lowerMessage.includes("good")) {
+                return "I’m pleased to hear that. May your good fortune continue.";
+            } else if (lowerMessage.includes("okay")) {
+                return "A satisfactory response. Let's keep going.";
+            } else if (lowerMessage.includes("things to do")) {
+                return "Consider reading, learning a new skill, or having a conversation with me. How can I help you today?";
+            } else if (lowerMessage.includes("why") || lowerMessage.includes("what") || lowerMessage.includes("how")) {
+                return "That's a fascinating question. The answer might not be simple, but I will certainly do my best to offer insights.";
+            } else {
+                return "I don't understand. Allow me to process this. Meanwhile, would you like to discuss something else?";
+            }
+        }
+
+        // Optional: Add some animations
+        document.querySelector('button').addEventListener('mouseenter', () => {
+            document.querySelector('button').style.transform = 'scale(1.1)';
+        });
+
+        document.querySelector('button').addEventListener('mouseleave', () => {
+            document.querySelector('button').style.transform = 'scale(1)';
+        });
+    </script>
+</body>
+</html>
